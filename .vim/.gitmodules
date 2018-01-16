@@ -1,0 +1,3 @@
+[submodule "bundle/ColorSelect"]
+	path = bundle/ColorSelect
+	url = git://github.com/kassio/ColorSelect.git

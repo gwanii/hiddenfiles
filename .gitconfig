@@ -1,0 +1,16 @@
+[user]
+    email = xxx@xxx.com
+	name = wtf
+[alias]
+    ad = add
+    st = status
+    sw = show
+    cl = clone
+	co = checkout
+	ci = commit
+	br = branch
+    df = diff
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    pl = pull
+    ph = push
+    tg = tag
