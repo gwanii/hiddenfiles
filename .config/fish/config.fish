@@ -44,16 +44,15 @@ eval (python -m virtualfish compat_aliases projects global_requirements)
 
 # environment variable
 set -gx EDITOR /usr/bin/vim
-set -gx GOROOT /usr/local/go
-set -gx GOBIN /usr/local/go/bin
-set -gx GOPATH ~/Test/go
+#set -gx GOROOT /usr/local/go
+#set -gx GOBIN /usr/local/go/bin
+set -gx GOPATH ~/GO
 set -gx PATH $GOBIN $GOPATH/bin $PATH
 
 set -gx JAVA_HOME /usr/lib/jvm/java-8-oracle
 set -gx JRE_HOME $JAVA_HOME/jre
 set -gx CLASSPATH ".:$JAVA_HOME/lib:$JRE_HOME/lib"
 set -gx PATH $JAVA_HOME/bin $PATH
-set -gx PATH "/home/wtf/Anaconda3/bin" $PATH
 
 # fuck the GFW with XX-Net
 function fuck --description "fuck the gfw"
@@ -87,3 +86,6 @@ end
 function filez --description "quick login ftp"
     filezilla ftp://wtf:wtf@127.0.0.1:21/ -a /home/wtf
 end
+
+# emacs terminal
+alias em="emacs -nw"
