@@ -92,3 +92,8 @@ alias em "emacs -nw"
 
 # ll sort by time
 alias ll "ls -tl"
+
+# tarz
+function tarz --description "simplify tar zcvf"
+    tar zcvf $argv[1].tar.gz $argv[1]
+end
