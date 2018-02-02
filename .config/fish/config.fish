@@ -88,4 +88,7 @@ function filez --description "quick login ftp"
 end
 
 # emacs terminal
-alias em="emacs -nw"
+alias em "emacs -nw"
+
+# ll sort by time
+alias ll "ls -tl"
