@@ -13,4 +13,11 @@
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
     pl = pull
     ph = push
+    mg = merge
     tg = tag
+    fh = fetch
+    rt = reset
+    rb = rebase
+    cp = cherry-pick
+[http]
+	sslCAinfo = /etc/ssl/certs/ca-certificates.crt

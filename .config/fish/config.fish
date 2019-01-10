@@ -24,16 +24,18 @@ alias ginit "gt co -b init (gt lg| tail -5|awk '/^commit/{print $2}')"
 alias vinit "virtualenv .venv; and source .venv/bin/activate.fish"
 alias pipr "pip install -r requirements.txt"
 
+alias p "python3"
 alias p2 "python2"
-alias p3 "python3"
 
-alias py "ptpython2"
-alias py3 "ptpython3"
-alias ipy "ptipython2"
-alias ipy3 "ptipython3"
+alias py "ptpython3"
+alias py2 "ptpython2"
+alias ipy "ptipython3"
+alias ipy2 "ptipython2"
 
 alias els "etcdctl ls --sort -r -p"
 alias egt "etcdctl get"
+
+alias diff "colordiff"
 
 # virtualfish
 # ensure that you load virtualfish after those modifications
@@ -45,14 +47,18 @@ eval (python -m virtualfish compat_aliases projects global_requirements)
 # environment variable
 set -gx EDITOR /usr/bin/vim
 #set -gx GOROOT /usr/local/go
-#set -gx GOBIN /usr/local/go/bin
-set -gx GOPATH ~/GO
-set -gx PATH $GOBIN $GOPATH/bin $PATH
+set -gx GOPATH ~/go
+set -gx GOBIN $GOPATH/bin
+set -gx GOSRC $GOPATH/src
+set -gx GOPKG $GOPATH/pkg
+set -gx PATH $GOBIN $PATH
 
 set -gx JAVA_HOME /usr/lib/jvm/java-8-oracle
 set -gx JRE_HOME $JAVA_HOME/jre
 set -gx CLASSPATH ".:$JAVA_HOME/lib:$JRE_HOME/lib"
 set -gx PATH $JAVA_HOME/bin $PATH
+
+set -gx PATH $HOME/.cargo/bin $PATH
 
 # fuck the GFW with XX-Net
 function fuck --description "fuck the gfw"
@@ -87,13 +93,113 @@ function filez --description "quick login ftp"
     filezilla ftp://wtf:wtf@127.0.0.1:21/ -a /home/wtf
 end
 
+function mountwin --description "mount windows shared directory"
+    mkdir -p ~/WIN
+    sudo mount -t cifs -o "username=wtf,password=wtf" //192.168.1.1/wtf/ ~/WIN
+end
+
+function umountwin --description "umount windows shared directory"
+    sudo umount ~/WIN
+end
+
 # emacs terminal
 alias em "emacs -nw"
 
 # ll sort by time
 alias ll "ls -tl"
+alias ll1 "ll|head -n2"
 
 # tarz
 function tarz --description "simplify tar zcvf"
     tar zcvf $argv[1].tar.gz $argv[1]
+end
+
+# ps list by process name
+function pslist
+    ps -fp (pgrep $argv[1])
+end
+
+# tail -f
+function tailf
+    tail -n0 -f $argv[1]
+end
+
+# cross the GFW by ssh
+function cross
+    sudo systemctl restart polipo
+    set crossPID (lsof -i:8765|grep LISTEN|head -n1|awk '{print $2}')
+    test -n crossPID; and kill -9 "$crossPID"
+    ssh -p 22222 -fND localhost:8765 root@x.x.x.x
+end
+
+
+# log
+function log
+    switch $argv[1]
+        case info
+            echo $argv[2]
+        case error
+            set_color red; echo -n "[Error]: "; set_color normal; echo $argv[2]
+        case done
+            set_color green; echo -n "[Success]: "; set_color normal; echo $argv[2]
+    end
+end
+
+# global substitute appeared string
+function gsub
+    # example: gsub "hello" "world"
+    if test -n $argv[3]
+        set search_dir "$PWD"
+    else
+        set search_dir $argv[3]
+    end
+    log info "- Substitute \"$argv[1]\" with \"$argv[2]\" at directory $search_dir"
+    set result (sed -i -e "s/$argv[1]/$argv[2]/g" (rg -wl -- $argv[1] "$search_dir") 2>&1)
+    if test -z "$result"
+        log done
+    else
+        log error "$result"
+    end
+end
+
+# global delete appeared string
+function gdel
+    # example: gsdel "hello"
+    if test -n $argv[2]
+        set search_dir "$PWD"
+    else
+        set search_dir $argv[2]
+    end
+    log info "- Delete line where \"$argv[1]\" appears at directory $search_dir"
+    set result (sed -i -e "/$argv[1]/d" (rg -wl $argv[1] "$search_dir") 2>&1)
+    if test -z "$result"
+        log done
+    else
+        log error "$result"
+    end
+end
+
+# openstack
+function showhyper
+    nova show $argv[1]|grep -E "hypervisor|instance"|awk '{print $4}'
+end
+# get console of vm
+function console
+    set ip $argv[1]
+    set uuid (nova list|grep "$ip"|awk '{print $2}')
+    set hyper (showhyper "$uuid")
+    set host (echo "$hyper" | awk '{print $1}')
+    set vm (echo "$hyper" | awk '{print $2}')
+    ssh -t "$host" virsh console "$vm"
+end
+
+# jenkins-cli
+alias jk "java -jar /home/wtf/j/jenkins-cli.jar -s http://192.168.9.105:8080/ -auth wtf:wtf"
+
+# openresty
+function xconf
+    vi + /etc/openresty/nginx.conf
+end
+function agentzh
+    sudo systemctl restart openresty
 end
