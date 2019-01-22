@@ -27,3 +27,5 @@ dev toolchain includes:
 - [bat](https://github.com/sharkdp/bat)
 
 - [fd](https://github.com/sharkdp/fd)
+
+- [rg](https://github.com/BurntSushi/ripgrep)
